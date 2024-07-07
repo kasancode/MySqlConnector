@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using MySqlConnector.ColumnReaders;
@@ -100,15 +101,7 @@ internal sealed class Row
 		return value switch
 		{
 			bool boolValue => boolValue,
-			sbyte sbyteValue => sbyteValue != 0,
-			byte byteValue => byteValue != 0,
-			short shortValue => shortValue != 0,
-			ushort ushortValue => ushortValue != 0,
-			int intValue => intValue != 0,
-			uint uintValue => uintValue != 0,
-			long longValue => longValue != 0,
-			ulong ulongValue => ulongValue != 0,
-			decimal decimalValue => decimalValue != 0,
+			IConvertible convertibleValue => convertibleValue.ToBoolean(null),
 			_ => (bool) value,
 		};
 	}
@@ -119,15 +112,7 @@ internal sealed class Row
 		return value switch
 		{
 			sbyte sbyteValue => sbyteValue,
-			byte byteValue => checked((sbyte) byteValue),
-			short shortValue => checked((sbyte) shortValue),
-			ushort ushortValue => checked((sbyte) ushortValue),
-			int intValue => checked((sbyte) intValue),
-			uint uintValue => checked((sbyte) uintValue),
-			long longValue => checked((sbyte) longValue),
-			ulong ulongValue => checked((sbyte) ulongValue),
-			decimal decimalValue => (sbyte) decimalValue,
-			bool boolValue => boolValue ? (sbyte) 1 : (sbyte) 0,
+			IConvertible convertibleValue => convertibleValue.ToSByte(null),
 			_ => (sbyte) value,
 		};
 	}
@@ -138,15 +123,7 @@ internal sealed class Row
 		return value switch
 		{
 			byte byteValue => byteValue,
-			sbyte sbyteValue => checked((byte) sbyteValue),
-			short shortValue => checked((byte) shortValue),
-			ushort ushortValue => checked((byte) ushortValue),
-			int intValue => checked((byte) intValue),
-			uint uintValue => checked((byte) uintValue),
-			long longValue => checked((byte) longValue),
-			ulong ulongValue => checked((byte) ulongValue),
-			decimal decimalValue => (byte) decimalValue,
-			bool boolValue => boolValue ? (byte) 1 : (byte) 0,
+			IConvertible convertibleValue => convertibleValue.ToByte(null),
 			_ => (byte) value,
 		};
 	}
@@ -220,15 +197,7 @@ internal sealed class Row
 		return value switch
 		{
 			short shortValue => shortValue,
-			sbyte sbyteValue => sbyteValue,
-			byte byteValue => byteValue,
-			ushort ushortValue => checked((short) ushortValue),
-			int intValue => checked((short) intValue),
-			uint uintValue => checked((short) uintValue),
-			long longValue => checked((short) longValue),
-			ulong ulongValue => checked((short) ulongValue),
-			decimal decimalValue => (short) decimalValue,
-			bool boolValue => boolValue ? (short) 1 : (short) 0,
+			IConvertible convertibleValue => convertibleValue.ToInt16(null),
 			_ => (short) value,
 		};
 	}
@@ -254,15 +223,7 @@ internal sealed class Row
 		return value switch
 		{
 			long longValue => longValue,
-			sbyte sbyteValue => sbyteValue,
-			byte byteValue => byteValue,
-			short shortValue => shortValue,
-			ushort ushortValue => ushortValue,
-			int intValue => intValue,
-			uint uintValue => uintValue,
-			ulong ulongValue => checked((long) ulongValue),
-			decimal decimalValue => (long) decimalValue,
-			bool boolValue => boolValue ? 1 : 0,
+			IConvertible convertibleValue => convertibleValue.ToInt64(null),
 			_ => (long) value,
 		};
 	}
@@ -273,15 +234,7 @@ internal sealed class Row
 		return value switch
 		{
 			ushort ushortValue => ushortValue,
-			sbyte sbyteValue => checked((ushort) sbyteValue),
-			byte byteValue => byteValue,
-			short shortValue => checked((ushort) shortValue),
-			int intValue => checked((ushort) intValue),
-			uint uintValue => checked((ushort) uintValue),
-			long longValue => checked((ushort) longValue),
-			ulong ulongValue => checked((ushort) ulongValue),
-			decimal decimalValue => (ushort) decimalValue,
-			bool boolValue => boolValue ? (ushort) 1 : (ushort) 0,
+			IConvertible convertibleValue => convertibleValue.ToUInt16(null),
 			_ => (ushort) value,
 		};
 	}
@@ -292,15 +245,7 @@ internal sealed class Row
 		return value switch
 		{
 			uint uintValue => uintValue,
-			sbyte sbyteValue => checked((uint) sbyteValue),
-			byte byteValue => byteValue,
-			short shortValue => checked((uint) shortValue),
-			ushort ushortValue => ushortValue,
-			int intValue => checked((uint) intValue),
-			long longValue => checked((uint) longValue),
-			ulong ulongValue => checked((uint) ulongValue),
-			decimal decimalValue => (uint) decimalValue,
-			bool boolValue => boolValue ? 1u : 0,
+			IConvertible convertibleValue => convertibleValue.ToUInt32(null),
 			_ => (uint) value,
 		};
 	}
@@ -311,15 +256,7 @@ internal sealed class Row
 		return value switch
 		{
 			ulong ulongValue => ulongValue,
-			sbyte sbyteValue => checked((ulong) sbyteValue),
-			byte byteValue => byteValue,
-			short shortValue => checked((ulong) shortValue),
-			ushort ushortValue => ushortValue,
-			int intValue => checked((ulong) intValue),
-			uint uintValue => uintValue,
-			long longValue => checked((ulong) longValue),
-			decimal decimalValue => (ulong) decimalValue,
-			bool boolValue => boolValue ? 1ul : 0,
+			IConvertible convertibleValue => convertibleValue.ToUInt64(null),
 			_ => (ulong) value,
 		};
 	}
@@ -361,8 +298,7 @@ internal sealed class Row
 		return value switch
 		{
 			decimal decimalValue => decimalValue,
-			double doubleValue => (decimal) doubleValue,
-			float floatValue => (decimal) floatValue,
+			IConvertible convertibleValue => convertibleValue.ToDecimal(null),
 			_ => (decimal) value,
 		};
 	}
@@ -373,8 +309,7 @@ internal sealed class Row
 		return value switch
 		{
 			double doubleValue => doubleValue,
-			float floatValue => floatValue,
-			decimal decimalValue => (double) decimalValue,
+			IConvertible convertibleValue => convertibleValue.ToDouble(null),
 			_ => (double) value,
 		};
 	}
@@ -389,7 +324,7 @@ internal sealed class Row
 			float floatValue => floatValue,
 			double doubleValue when doubleValue is >= float.MinValue and <= float.MaxValue => (float) doubleValue,
 			double => throw new InvalidCastException("The value cannot be safely cast to Single."),
-			decimal decimalValue => (float) decimalValue,
+			IConvertible convertibleValue => convertibleValue.ToSingle(null),
 			_ => (float) value,
 		};
 	}
